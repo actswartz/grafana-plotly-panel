@@ -127,7 +127,7 @@ class PlotlyPanelCtrl extends MetricsPanelCtrl {
   onRefresh() {
     // ignore fetching data if another panel is in fullscreen
     if (this.otherPanelInFullscreenMode()) { return; }
-    
+
 
     if(this.graph && this.initalized) {
       Plotly.redraw(this.graph);
@@ -172,7 +172,7 @@ class PlotlyPanelCtrl extends MetricsPanelCtrl {
   onRender() {
     // ignore fetching data if another panel is in fullscreen
     if (this.otherPanelInFullscreenMode()) { return; }
-    
+
 
     if(!this.initalized) {
       var s = this.panel.pconfig.settings;
@@ -208,19 +208,21 @@ class PlotlyPanelCtrl extends MetricsPanelCtrl {
         }
       });
 
-      if(false) {
+      if(true) {
         this.graph.on('plotly_hover', (data, xxx) => {
-          console.log( 'HOVER!!!', data, xxx, this.mouse );
           if(data.points.length>0) {
             var idx = 0;
             var pt = data.points[idx];
+            var dataText = '';
+            if(pt.data !== undefined && pt.data.ts !== undefined){
+                dataText = pt.data.ts[pt.pointNumber];
+            }
+            var body = '<div class="graph-tooltip-time">'+ dataText +'</div>';
+            // body += "<center>";
+            // body += pt.x + ', '+pt.y;
+            // body += "</center>";
 
-            var body = '<div class="graph-tooltip-time">'+ pt.pointNumber +'</div>';
-            body += "<center>";
-            body += pt.x + ', '+pt.y;
-            body += "</center>";
-
-            this.$tooltip.html( body ).place_tt( this.mouse.pageX + 10, this.mouse.pageY );
+            this.$tooltip.html( body ).place_tt( this.mouse.pageX + 10, this.mouse.pageY + 10);
           }
         }).on('plotly_unhover', (data) => {
           this.$tooltip.detach();
@@ -313,7 +315,7 @@ class PlotlyPanelCtrl extends MetricsPanelCtrl {
       this.data[idx.name] = idx;
       for(let i=0; i<dataList.length; i++) {
         let datapoints = dataList[i].datapoints;
-        if(datapoints.length > 0) {
+        if(datapoints !== undefined && datapoints.length > 0) {
           let val = {
             name: dataList[i].target,
             type: 'number',
@@ -361,6 +363,52 @@ class PlotlyPanelCtrl extends MetricsPanelCtrl {
               }
             }
           }
+        }
+        else{
+          let columns = dataList[i].columns;
+          let rows = dataList[i].rows;
+          if(rows.length > 0){
+            let val = {
+                name: columns[1].text,
+                type: 'number',
+                missing: 0,
+                idx: i,
+                points: []
+            };
+
+            if(i==0) {
+                dmapping.x = val.name;
+            }
+            else if(i==1) {
+                dmapping.y = val.name;
+            }
+            else if(i==2) {
+                dmapping.z = val.name;
+            }
+
+            this.data[val.name] = val;
+            if(key.points.length==0) {
+              for(var j=0; j<rows.length; j++) {
+                key.points.push( rows[j][0] );
+                val.points.push( rows[j][1] );
+                idx.points.push( j );
+              }
+            }
+            else {
+              for(var j=0; j<rows.length; j++) {
+                if(j >= key.points.length ) {
+                    break;
+                }
+                // Make sure it is from the same timestamp
+                if(key.points[j] == rows[j][0]) {
+                    val.points.push( rows[j][1] );
+                }
+                else {
+                    val.missing = val.missing+1;
+                }
+              }
+            }
+        }
         }
       }
 

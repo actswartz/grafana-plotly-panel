@@ -291,19 +291,21 @@ System.register(['app/plugins/sdk', 'lodash', 'moment', 'angular', './external/p
                 }
               });
 
-              if (false) {
+              if (true) {
                 this.graph.on('plotly_hover', function (data, xxx) {
-                  console.log('HOVER!!!', data, xxx, _this2.mouse);
                   if (data.points.length > 0) {
                     var idx = 0;
                     var pt = data.points[idx];
+                    var dataText = '';
+                    if (pt.data !== undefined && pt.data.ts !== undefined) {
+                      dataText = pt.data.ts[pt.pointNumber];
+                    }
+                    var body = '<div class="graph-tooltip-time">' + dataText + '</div>';
+                    // body += "<center>";
+                    // body += pt.x + ', '+pt.y;
+                    // body += "</center>";
 
-                    var body = '<div class="graph-tooltip-time">' + pt.pointNumber + '</div>';
-                    body += "<center>";
-                    body += pt.x + ', ' + pt.y;
-                    body += "</center>";
-
-                    _this2.$tooltip.html(body).place_tt(_this2.mouse.pageX + 10, _this2.mouse.pageY);
+                    _this2.$tooltip.html(body).place_tt(_this2.mouse.pageX + 10, _this2.mouse.pageY + 10);
                   }
                 }).on('plotly_unhover', function (data) {
                   _this2.$tooltip.detach();
@@ -395,7 +397,7 @@ System.register(['app/plugins/sdk', 'lodash', 'moment', 'angular', './external/p
               this.data[idx.name] = idx;
               for (var i = 0; i < dataList.length; i++) {
                 var datapoints = dataList[i].datapoints;
-                if (datapoints.length > 0) {
+                if (datapoints !== undefined && datapoints.length > 0) {
                   var val = {
                     name: dataList[i].target,
                     type: 'number',
@@ -435,6 +437,47 @@ System.register(['app/plugins/sdk', 'lodash', 'moment', 'angular', './external/p
                         val.points.push(datapoints[j][0]);
                       } else {
                         val.missing = val.missing + 1;
+                      }
+                    }
+                  }
+                } else {
+                  var columns = dataList[i].columns;
+                  var rows = dataList[i].rows;
+                  if (rows.length > 0) {
+                    var _val = {
+                      name: columns[1].text,
+                      type: 'number',
+                      missing: 0,
+                      idx: i,
+                      points: []
+                    };
+
+                    if (i == 0) {
+                      dmapping.x = _val.name;
+                    } else if (i == 1) {
+                      dmapping.y = _val.name;
+                    } else if (i == 2) {
+                      dmapping.z = _val.name;
+                    }
+
+                    this.data[_val.name] = _val;
+                    if (key.points.length == 0) {
+                      for (var j = 0; j < rows.length; j++) {
+                        key.points.push(rows[j][0]);
+                        _val.points.push(rows[j][1]);
+                        idx.points.push(j);
+                      }
+                    } else {
+                      for (var j = 0; j < rows.length; j++) {
+                        if (j >= key.points.length) {
+                          break;
+                        }
+                        // Make sure it is from the same timestamp
+                        if (key.points[j] == rows[j][0]) {
+                          _val.points.push(rows[j][1]);
+                        } else {
+                          _val.missing = _val.missing + 1;
+                        }
                       }
                     }
                   }
