@@ -301,11 +301,11 @@ System.register(['app/plugins/sdk', 'lodash', 'moment', 'angular', './external/p
                       dataText = pt.data.ts[pt.pointNumber];
                     }
                     var body = '<div class="graph-tooltip-time">' + dataText + '</div>';
-                    // body += "<center>";
-                    // body += pt.x + ', '+pt.y;
-                    // body += "</center>";
+                    body += "<center>";
+                    body += pt.x + ', ' + pt.y;
+                    body += "</center>";
 
-                    _this2.$tooltip.html(body).place_tt(_this2.mouse.pageX + 10, _this2.mouse.pageY + 10);
+                    _this2.$tooltip.html(body).place_tt(_this2.mouse.pageX + 10, _this2.mouse.pageY);
                   }
                 }).on('plotly_unhover', function (data) {
                   _this2.$tooltip.detach();

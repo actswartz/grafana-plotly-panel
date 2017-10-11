@@ -218,11 +218,11 @@ class PlotlyPanelCtrl extends MetricsPanelCtrl {
                 dataText = pt.data.ts[pt.pointNumber];
             }
             var body = '<div class="graph-tooltip-time">'+ dataText +'</div>';
-            // body += "<center>";
-            // body += pt.x + ', '+pt.y;
-            // body += "</center>";
+            body += "<center>";
+            body += pt.x + ', '+pt.y;
+            body += "</center>";
 
-            this.$tooltip.html( body ).place_tt( this.mouse.pageX + 10, this.mouse.pageY + 10);
+            this.$tooltip.html( body ).place_tt( this.mouse.pageX + 10, this.mouse.pageY);
           }
         }).on('plotly_unhover', (data) => {
           this.$tooltip.detach();
