@@ -282,13 +282,7 @@ System.register(['app/plugins/sdk', 'lodash', 'moment', 'angular', './external/p
               Plotly.newPlot(this.graph, data, this.layout, options);
 
               this.graph.on('plotly_click', function (data) {
-                for (var i = 0; i < data.points.length; i++) {
-                  var idx = data.points[i].pointNumber;
-                  var ts = _this2.trace.ts[idx];
-                  // console.log( 'CLICK!!!', ts, data );
-                  var msg = data.points[i].x.toPrecision(4) + ", " + data.points[i].y.toPrecision(4);
-                  _this2.$rootScope.appEvent('alert-success', [msg, '@ ' + _this2.dashboard.formatDate(moment(ts))]);
-                }
+                throw new Error();
               });
 
               if (true) {
