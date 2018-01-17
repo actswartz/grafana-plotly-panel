@@ -239,8 +239,6 @@ System.register(['app/plugins/sdk', 'lodash', 'moment', 'angular', './external/p
           value: function onSegsChanged() {
             this.panel.pconfig.settings.marker.symbol = this.segs.symbol.value;
             this.onConfigChanged();
-
-            console.log(this.segs.symbol, this.panel.pconfig);
           }
         }, {
           key: 'onPanelInitalized',
@@ -315,12 +313,8 @@ System.register(['app/plugins/sdk', 'lodash', 'moment', 'angular', './external/p
               this.graph.on('plotly_selected', function (data) {
 
                 if (data.points.length == 0) {
-                  console.log("Nothign Selected", data);
                   return;
                 }
-
-                console.log("SELECTED", data);
-
                 var min = Number.MAX_SAFE_INTEGER;
                 var max = Number.MIN_SAFE_INTEGER;
 
@@ -335,8 +329,6 @@ System.register(['app/plugins/sdk', 'lodash', 'moment', 'angular', './external/p
                 max += 1000;
 
                 var range = { from: moment.utc(min), to: moment.utc(max) };
-
-                console.log('SELECTED!!!', min, max, data.points.length, range);
 
                 _this2.timeSrv.setTime(range);
 
@@ -367,9 +359,7 @@ System.register(['app/plugins/sdk', 'lodash', 'moment', 'angular', './external/p
             this.trace.z = [];
 
             this.data = {};
-            if (dataList.length < 2) {
-              console.log("No data", dataList);
-            } else {
+            if (dataList.length < 2) {} else {
               var dmapping = {
                 x: null,
                 y: null,
@@ -519,7 +509,6 @@ System.register(['app/plugins/sdk', 'lodash', 'moment', 'angular', './external/p
                 this.layout.scene.zaxis.title = dZ.name;
 
                 this.trace.z = dZ.points;
-                console.log("3D", this.layout);
               } else {
                 this.layout.xaxis.title = dX.name;
                 this.layout.yaxis.title = dY.name;
@@ -547,15 +536,12 @@ System.register(['app/plugins/sdk', 'lodash', 'moment', 'angular', './external/p
                 }
                 this.trace.marker.color = dC.points;
               }
-
-              console.log("TRACE", this.trace);
             }
             this.render();
           }
         }, {
           key: 'onConfigChanged',
           value: function onConfigChanged() {
-            console.log("Config changed...");
             if (this.graph) {
               Plotly.Plots.purge(this.graph);
               this.graph.innerHTML = '';

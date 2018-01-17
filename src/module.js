@@ -161,8 +161,6 @@ class PlotlyPanelCtrl extends MetricsPanelCtrl {
   onSegsChanged() {
     this.panel.pconfig.settings.marker.symbol = this.segs.symbol.value;
     this.onConfigChanged();
-
-    console.log( this.segs.symbol, this.panel.pconfig );
   }
 
   onPanelInitalized() {
@@ -232,12 +230,8 @@ class PlotlyPanelCtrl extends MetricsPanelCtrl {
       this.graph.on('plotly_selected',  (data) => {
 
         if(data.points.length == 0) {
-          console.log( "Nothign Selected", data)
           return;
         }
-
-        console.log( "SELECTED", data)
-
         var min = Number.MAX_SAFE_INTEGER;
         var max = Number.MIN_SAFE_INTEGER;
 
@@ -252,8 +246,6 @@ class PlotlyPanelCtrl extends MetricsPanelCtrl {
         max += 1000;
 
         var range = {from: moment.utc(min), to: moment.utc(max) };
-
-        console.log( 'SELECTED!!!', min, max, data.points.length, range );
 
         this.timeSrv.setTime(range);
 
@@ -285,7 +277,6 @@ class PlotlyPanelCtrl extends MetricsPanelCtrl {
 
     this.data = {};
     if(dataList.length < 2) {
-      console.log( "No data", dataList );
     }
     else {
       let dmapping = {
@@ -448,7 +439,6 @@ class PlotlyPanelCtrl extends MetricsPanelCtrl {
         this.layout.scene.zaxis.title = dZ.name;
 
         this.trace.z = dZ.points;
-        console.log( "3D", this.layout);
       }
       else {
         this.layout.xaxis.title = dX.name;
@@ -479,13 +469,11 @@ class PlotlyPanelCtrl extends MetricsPanelCtrl {
         this.trace.marker.color = dC.points;
       }
 
-      console.log( "TRACE", this.trace );
     }
     this.render();
   }
 
   onConfigChanged() {
-    console.log( "Config changed...");
     if(this.graph) {
       Plotly.Plots.purge(this.graph);
       this.graph.innerHTML = '';
