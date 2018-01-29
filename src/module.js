@@ -9,13 +9,17 @@ import * as Plotly from './external/plotly';
 
 class PlotlyPanelCtrl extends MetricsPanelCtrl {
 
-  constructor($scope, $injector, $q, $rootScope, $timeout, $window, timeSrv, uiSegmentSrv) {
+  constructor($scope, $injector, $q, $rootScope, $timeout, $window, timeSrv, uiSegmentSrv, detangleSrv) {
     super($scope, $injector);
-
+    this.detangleSrv = detangleSrv;
     this.$rootScope = $rootScope;
     this.timeSrv = timeSrv;
     this.uiSegmentSrv = uiSegmentSrv;
     this.q = $q;
+
+    this.sortingOrder = [];
+    this.couplingMetrics = [];
+    this.targetSelections = [];
 
     this.sizeChanged = true;
     this.initalized = false;
@@ -94,7 +98,20 @@ class PlotlyPanelCtrl extends MetricsPanelCtrl {
           yaxis:{title: 'Y AXIS'},
           zaxis:{title: 'Z AXIS'},
         },
-      }
+      },
+      detangle: {
+        coupling: false,
+        sortingOrder: 'desc',
+        limit: null,
+        metric: 'coupling',
+        sourceType: '$issue_type',
+        targetType: '$target_issue_type',
+        sourceTypeData: '',
+        targetTypeData: '',
+        author: '$author',
+        authorData: '',
+        target: 'issue',
+      },
     };
 
     // Make sure it has the default settings (may have more!)
@@ -110,6 +127,29 @@ class PlotlyPanelCtrl extends MetricsPanelCtrl {
     this.events.on('data-error', this.onDataError.bind(this));
     this.events.on('panel-initialized', this.onPanelInitalized.bind(this));
     this.events.on('refresh', this.onRefresh.bind(this));
+
+    /**
+     * @detangleEdit start
+     * @author Ural
+     */
+    this.sortingOrder = [
+      {text: 'Ascending', value: 'asc'},
+      {text: 'Descending', value: 'desc'},
+    ];
+
+    this.couplingMetrics = [
+      {text: 'Coupling Value', value: 'coupling'},
+      {text: 'Num. of Couples', value: 'couplecounts'},
+    ];
+
+    this.targetSelections = [
+      {text: 'Issues', value: 'issue'},
+      {text: 'Files', value: 'file'},
+    ];
+    /**
+     * @detangleEdit end
+     * @author Ural
+     */
 
     angular.element($window).bind('resize', this.onResize.bind(this) );
   }
@@ -136,7 +176,9 @@ class PlotlyPanelCtrl extends MetricsPanelCtrl {
 
   onInitEditMode() {
     this.addEditorTab('Display', 'public/plugins/natel-plotly-panel/tab_display.html',2);
-  //  this.editorTabIndex = 1;
+    this.addEditorTab('Detangle', 'public/plugins/natel-plotly-panel/detangle.html',3);
+
+    //  this.editorTabIndex = 1;
     this.refresh();
     this.segs = {
       symbol: this.uiSegmentSrv.newSegment({value: this.panel.pconfig.settings.marker.symbol })
@@ -207,7 +249,7 @@ class PlotlyPanelCtrl extends MetricsPanelCtrl {
             var pt = data.points[idx];
             var dataText = '';
             if(pt.data !== undefined && pt.data.ts !== undefined){
-                dataText = pt.data.ts[pt.pointNumber];
+              dataText = pt.data.ts[pt.pointNumber];
             }
             var body = '<div class="graph-tooltip-time">'+ dataText +'</div>';
             body += "<center>";
@@ -270,7 +312,7 @@ class PlotlyPanelCtrl extends MetricsPanelCtrl {
     this.trace.z = [];
 
     this.data = {};
-    if(dataList.length < 2) {
+    if(dataList.length < 2 && !this.panel.pconfig.detangle.coupling  ) {
     }
     else {
       let dmapping = {
@@ -279,7 +321,26 @@ class PlotlyPanelCtrl extends MetricsPanelCtrl {
         z:null
       };
 
-   //   console.log( "plotly data", dataList);
+      /**
+       * @detangleEdit start
+       * @author Ural
+       */
+      if (this.panel.pconfig.detangle.coupling) {
+        this.panel.pconfig.detangle.sourceTypeData = this.templateSrv.replaceWithText(this.panel.detangle.sourceType, this.panel.scopedVars);
+        this.panel.pconfig.detangle.targetTypeData = this.templateSrv.replaceWithText(this.panel.detangle.targetType, this.panel.scopedVars);
+        this.panel.pconfig.detangle.authorData = this.templateSrv.replaceWithText(this.panel.detangle.author, this.panel.scopedVars);
+        var t0 = performance.now();
+
+        dataList = this.detangleSrv.dataConvertor(dataList, this.panel.pconfig.detangle, 'table');
+        var t1 = performance.now();
+        console.log("Call to dataConvertor took " + (t1 - t0) + " milliseconds.");
+      }
+      /**
+       * @detangleEdit end
+       * @author Ural
+       */
+
+        //   console.log( "plotly data", dataList);
       let cfg = this.panel.pconfig;
       let mapping = cfg.mapping;
       let key = {
@@ -354,21 +415,21 @@ class PlotlyPanelCtrl extends MetricsPanelCtrl {
           let rows = dataList[i].rows;
           if(rows.length > 0){
             let val = {
-                name: columns[1].text,
-                type: 'number',
-                missing: 0,
-                idx: i,
-                points: []
+              name: columns[1].text,
+              type: 'number',
+              missing: 0,
+              idx: i,
+              points: []
             };
 
             if(i==0) {
-                dmapping.x = val.name;
+              dmapping.x = val.name;
             }
             else if(i==1) {
-                dmapping.y = val.name;
+              dmapping.y = val.name;
             }
             else if(i==2) {
-                dmapping.z = val.name;
+              dmapping.z = val.name;
             }
 
             this.data[val.name] = val;
@@ -382,18 +443,18 @@ class PlotlyPanelCtrl extends MetricsPanelCtrl {
             else {
               for(var j=0; j<rows.length; j++) {
                 if(j >= key.points.length ) {
-                    break;
+                  break;
                 }
                 // Make sure it is from the same timestamp
                 if(key.points[j] == rows[j][0]) {
-                    val.points.push( rows[j][1] );
+                  val.points.push( rows[j][1] );
                 }
                 else {
-                    val.missing = val.missing+1;
+                  val.missing = val.missing+1;
                 }
               }
             }
-        }
+          }
         }
       }
 
@@ -402,7 +463,7 @@ class PlotlyPanelCtrl extends MetricsPanelCtrl {
       if(!mapping.y) mapping.y = dmapping.y;
       if(!mapping.z) mapping.z = dmapping.z;
 
-     // console.log( "GOT", this.data, mapping );
+      // console.log( "GOT", this.data, mapping );
 
       var dX = this.data[mapping.x];
       var dY = this.data[mapping.y];
@@ -506,135 +567,135 @@ class PlotlyPanelCtrl extends MetricsPanelCtrl {
   getSymbolSegs()
   {
     var txt = [
-"circle","circle-open","circle-dot","circle-open-dot",
-"square","square-open","square-dot","square-open-dot",
-"diamond","diamond-open",
-"diamond-dot","diamond-open-dot",
-"cross","cross-open",
-"cross-dot","cross-open-dot",
-"x","x-open","x-dot","x-open-dot",
-"triangle-up",
-"triangle-up-open",
-"triangle-up-dot",
-"triangle-up-open-dot",
-"triangle-down",
-"triangle-down-open",
-"triangle-down-dot",
-"triangle-down-open-dot",
-"triangle-left",
-"triangle-left-open",
-"triangle-left-dot",
-"triangle-left-open-dot",
-"triangle-right",
-"triangle-right-open",
-"triangle-right-dot",
-"triangle-right-open-dot",
-"triangle-ne",
-"triangle-ne-open",
-"triangle-ne-dot",
-"triangle-ne-open-dot",
-"triangle-se",
-"triangle-se-open",
-"triangle-se-dot",
-"triangle-se-open-dot",
-"triangle-sw",
-"triangle-sw-open",
-"triangle-sw-dot",
-"triangle-sw-open-dot",
-"triangle-nw",
-"triangle-nw-open",
-"triangle-nw-dot",
-"triangle-nw-open-dot",
-"pentagon",
-"pentagon-open",
-"pentagon-dot",
-"pentagon-open-dot",
-"hexagon",
-"hexagon-open",
-"hexagon-dot",
-"hexagon-open-dot",
-"hexagon2",
-"hexagon2-open",
-"hexagon2-dot",
-"hexagon2-open-dot",
-"octagon",
-"octagon-open",
-"octagon-dot",
-"octagon-open-dot",
-"star",
-"star-open",
-"star-dot",
-"star-open-dot",
-"hexagram",
-"hexagram-open",
-"hexagram-dot",
-"hexagram-open-dot",
-"star-triangle-up",
-"star-triangle-up-open",
-"star-triangle-up-dot",
-"star-triangle-up-open-dot",
-"star-triangle-down",
-"star-triangle-down-open",
-"star-triangle-down-dot",
-"star-triangle-down-open-dot",
-"star-square",
-"star-square-open",
-"star-square-dot",
-"star-square-open-dot",
-"star-diamond",
-"star-diamond-open",
-"star-diamond-dot",
-"star-diamond-open-dot",
-"diamond-tall",
-"diamond-tall-open",
-"diamond-tall-dot",
-"diamond-tall-open-dot",
-"diamond-wide",
-"diamond-wide-open",
-"diamond-wide-dot",
-"diamond-wide-open-dot",
-"hourglass",
-"hourglass-open",
-"bowtie",
-"bowtie-open",
-"circle-cross",
-"circle-cross-open",
-"circle-x",
-"circle-x-open",
-"square-cross",
-"square-cross-open",
-"square-x",
-"square-x-open",
-"diamond-cross",
-"diamond-cross-open",
-"diamond-x",
-"diamond-x-open",
-"cross-thin",
-"cross-thin-open",
-"x-thin",
-"x-thin-open",
-"asterisk",
-"asterisk-open",
-"hash",
-"hash-open",
-"hash-dot",
-"hash-open-dot",
-"y-up",
-"y-up-open",
-"y-down",
-"y-down-open",
-"y-left",
-"y-left-open",
-"y-right",
-"y-right-open",
-"line-ew",
-"line-ew-open",
-"line-ns",
-"line-ns-open",
-"line-ne",
-"line-ne-open",
-"line-nw",
-"line-nw-open"
+      "circle","circle-open","circle-dot","circle-open-dot",
+      "square","square-open","square-dot","square-open-dot",
+      "diamond","diamond-open",
+      "diamond-dot","diamond-open-dot",
+      "cross","cross-open",
+      "cross-dot","cross-open-dot",
+      "x","x-open","x-dot","x-open-dot",
+      "triangle-up",
+      "triangle-up-open",
+      "triangle-up-dot",
+      "triangle-up-open-dot",
+      "triangle-down",
+      "triangle-down-open",
+      "triangle-down-dot",
+      "triangle-down-open-dot",
+      "triangle-left",
+      "triangle-left-open",
+      "triangle-left-dot",
+      "triangle-left-open-dot",
+      "triangle-right",
+      "triangle-right-open",
+      "triangle-right-dot",
+      "triangle-right-open-dot",
+      "triangle-ne",
+      "triangle-ne-open",
+      "triangle-ne-dot",
+      "triangle-ne-open-dot",
+      "triangle-se",
+      "triangle-se-open",
+      "triangle-se-dot",
+      "triangle-se-open-dot",
+      "triangle-sw",
+      "triangle-sw-open",
+      "triangle-sw-dot",
+      "triangle-sw-open-dot",
+      "triangle-nw",
+      "triangle-nw-open",
+      "triangle-nw-dot",
+      "triangle-nw-open-dot",
+      "pentagon",
+      "pentagon-open",
+      "pentagon-dot",
+      "pentagon-open-dot",
+      "hexagon",
+      "hexagon-open",
+      "hexagon-dot",
+      "hexagon-open-dot",
+      "hexagon2",
+      "hexagon2-open",
+      "hexagon2-dot",
+      "hexagon2-open-dot",
+      "octagon",
+      "octagon-open",
+      "octagon-dot",
+      "octagon-open-dot",
+      "star",
+      "star-open",
+      "star-dot",
+      "star-open-dot",
+      "hexagram",
+      "hexagram-open",
+      "hexagram-dot",
+      "hexagram-open-dot",
+      "star-triangle-up",
+      "star-triangle-up-open",
+      "star-triangle-up-dot",
+      "star-triangle-up-open-dot",
+      "star-triangle-down",
+      "star-triangle-down-open",
+      "star-triangle-down-dot",
+      "star-triangle-down-open-dot",
+      "star-square",
+      "star-square-open",
+      "star-square-dot",
+      "star-square-open-dot",
+      "star-diamond",
+      "star-diamond-open",
+      "star-diamond-dot",
+      "star-diamond-open-dot",
+      "diamond-tall",
+      "diamond-tall-open",
+      "diamond-tall-dot",
+      "diamond-tall-open-dot",
+      "diamond-wide",
+      "diamond-wide-open",
+      "diamond-wide-dot",
+      "diamond-wide-open-dot",
+      "hourglass",
+      "hourglass-open",
+      "bowtie",
+      "bowtie-open",
+      "circle-cross",
+      "circle-cross-open",
+      "circle-x",
+      "circle-x-open",
+      "square-cross",
+      "square-cross-open",
+      "square-x",
+      "square-x-open",
+      "diamond-cross",
+      "diamond-cross-open",
+      "diamond-x",
+      "diamond-x-open",
+      "cross-thin",
+      "cross-thin-open",
+      "x-thin",
+      "x-thin-open",
+      "asterisk",
+      "asterisk-open",
+      "hash",
+      "hash-open",
+      "hash-dot",
+      "hash-open-dot",
+      "y-up",
+      "y-up-open",
+      "y-down",
+      "y-down-open",
+      "y-left",
+      "y-left-open",
+      "y-right",
+      "y-right-open",
+      "line-ew",
+      "line-ew-open",
+      "line-ns",
+      "line-ns-open",
+      "line-ne",
+      "line-ne-open",
+      "line-nw",
+      "line-nw-open"
     ];
 
     var segs = [];

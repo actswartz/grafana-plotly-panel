@@ -69,15 +69,20 @@ System.register(['app/plugins/sdk', 'lodash', 'moment', 'angular', './external/p
       _export('PanelCtrl', PlotlyPanelCtrl = function (_MetricsPanelCtrl) {
         _inherits(PlotlyPanelCtrl, _MetricsPanelCtrl);
 
-        function PlotlyPanelCtrl($scope, $injector, $q, $rootScope, $timeout, $window, timeSrv, uiSegmentSrv) {
+        function PlotlyPanelCtrl($scope, $injector, $q, $rootScope, $timeout, $window, timeSrv, uiSegmentSrv, detangleSrv) {
           _classCallCheck(this, PlotlyPanelCtrl);
 
           var _this = _possibleConstructorReturn(this, (PlotlyPanelCtrl.__proto__ || Object.getPrototypeOf(PlotlyPanelCtrl)).call(this, $scope, $injector));
 
+          _this.detangleSrv = detangleSrv;
           _this.$rootScope = $rootScope;
           _this.timeSrv = timeSrv;
           _this.uiSegmentSrv = uiSegmentSrv;
           _this.q = $q;
+
+          _this.sortingOrder = [];
+          _this.couplingMetrics = [];
+          _this.targetSelections = [];
 
           _this.sizeChanged = true;
           _this.initalized = false;
@@ -155,6 +160,19 @@ System.register(['app/plugins/sdk', 'lodash', 'moment', 'angular', './external/p
                 yaxis: { title: 'Y AXIS' },
                 zaxis: { title: 'Z AXIS' }
               }
+            },
+            detangle: {
+              coupling: false,
+              sortingOrder: 'desc',
+              limit: null,
+              metric: 'coupling',
+              sourceType: '$issue_type',
+              targetType: '$target_issue_type',
+              sourceTypeData: '',
+              targetTypeData: '',
+              author: '$author',
+              authorData: '',
+              target: 'issue'
             }
           };
 
@@ -171,6 +189,20 @@ System.register(['app/plugins/sdk', 'lodash', 'moment', 'angular', './external/p
           _this.events.on('data-error', _this.onDataError.bind(_this));
           _this.events.on('panel-initialized', _this.onPanelInitalized.bind(_this));
           _this.events.on('refresh', _this.onRefresh.bind(_this));
+
+          /**
+           * @detangleEdit start
+           * @author Ural
+           */
+          _this.sortingOrder = [{ text: 'Ascending', value: 'asc' }, { text: 'Descending', value: 'desc' }];
+
+          _this.couplingMetrics = [{ text: 'Coupling Value', value: 'coupling' }, { text: 'Num. of Couples', value: 'couplecounts' }];
+
+          _this.targetSelections = [{ text: 'Issues', value: 'issue' }, { text: 'Files', value: 'file' }];
+          /**
+           * @detangleEdit end
+           * @author Ural
+           */
 
           angular.element($window).bind('resize', _this.onResize.bind(_this));
           return _this;
@@ -204,6 +236,8 @@ System.register(['app/plugins/sdk', 'lodash', 'moment', 'angular', './external/p
           key: 'onInitEditMode',
           value: function onInitEditMode() {
             this.addEditorTab('Display', 'public/plugins/natel-plotly-panel/tab_display.html', 2);
+            this.addEditorTab('Detangle', 'public/plugins/natel-plotly-panel/detangle.html', 3);
+
             //  this.editorTabIndex = 1;
             this.refresh();
             this.segs = {
@@ -353,12 +387,31 @@ System.register(['app/plugins/sdk', 'lodash', 'moment', 'angular', './external/p
             this.trace.z = [];
 
             this.data = {};
-            if (dataList.length < 2) {} else {
+            if (dataList.length < 2 && !this.panel.pconfig.detangle.coupling) {} else {
               var dmapping = {
                 x: null,
                 y: null,
                 z: null
               };
+
+              /**
+               * @detangleEdit start
+               * @author Ural
+               */
+              if (this.panel.pconfig.detangle.coupling) {
+                this.panel.pconfig.detangle.sourceTypeData = this.templateSrv.replaceWithText(this.panel.detangle.sourceType, this.panel.scopedVars);
+                this.panel.pconfig.detangle.targetTypeData = this.templateSrv.replaceWithText(this.panel.detangle.targetType, this.panel.scopedVars);
+                this.panel.pconfig.detangle.authorData = this.templateSrv.replaceWithText(this.panel.detangle.author, this.panel.scopedVars);
+                var t0 = performance.now();
+
+                dataList = this.detangleSrv.dataConvertor(dataList, this.panel.pconfig.detangle, 'table');
+                var t1 = performance.now();
+                console.log("Call to dataConvertor took " + (t1 - t0) + " milliseconds.");
+              }
+              /**
+               * @detangleEdit end
+               * @author Ural
+               */
 
               //   console.log( "plotly data", dataList);
               var cfg = this.panel.pconfig;
