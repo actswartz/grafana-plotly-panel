@@ -69,12 +69,13 @@ System.register(['app/plugins/sdk', 'lodash', 'moment', 'angular', './external/p
       _export('PanelCtrl', PlotlyPanelCtrl = function (_MetricsPanelCtrl) {
         _inherits(PlotlyPanelCtrl, _MetricsPanelCtrl);
 
-        function PlotlyPanelCtrl($scope, $injector, $q, $rootScope, $timeout, $window, timeSrv, uiSegmentSrv, detangleSrv) {
+        function PlotlyPanelCtrl($scope, $injector, $q, $rootScope, $timeout, $window, timeSrv, uiSegmentSrv, detangleSrv, templateSrv) {
           _classCallCheck(this, PlotlyPanelCtrl);
 
           var _this = _possibleConstructorReturn(this, (PlotlyPanelCtrl.__proto__ || Object.getPrototypeOf(PlotlyPanelCtrl)).call(this, $scope, $injector));
 
           _this.detangleSrv = detangleSrv;
+          _this.templateSrv = templateSrv;
           _this.$rootScope = $rootScope;
           _this.timeSrv = timeSrv;
           _this.uiSegmentSrv = uiSegmentSrv;
@@ -399,9 +400,9 @@ System.register(['app/plugins/sdk', 'lodash', 'moment', 'angular', './external/p
                * @author Ural
                */
               if (this.panel.pconfig.detangle.coupling) {
-                this.panel.pconfig.detangle.sourceTypeData = this.templateSrv.replaceWithText(this.panel.detangle.sourceType, this.panel.scopedVars);
-                this.panel.pconfig.detangle.targetTypeData = this.templateSrv.replaceWithText(this.panel.detangle.targetType, this.panel.scopedVars);
-                this.panel.pconfig.detangle.authorData = this.templateSrv.replaceWithText(this.panel.detangle.author, this.panel.scopedVars);
+                this.panel.pconfig.detangle.sourceTypeData = this.templateSrv.replaceWithText(this.panel.pconfig.detangle.sourceType, this.panel.scopedVars);
+                this.panel.pconfig.detangle.targetTypeData = this.templateSrv.replaceWithText(this.panel.pconfig.detangle.targetType, this.panel.scopedVars);
+                this.panel.pconfig.detangle.authorData = this.templateSrv.replaceWithText(this.panel.pconfig.detangle.author, this.panel.scopedVars);
                 var t0 = performance.now();
 
                 dataList = this.detangleSrv.dataConvertor(dataList, this.panel.pconfig.detangle, 'table');

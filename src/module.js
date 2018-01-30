@@ -9,9 +9,10 @@ import * as Plotly from './external/plotly';
 
 class PlotlyPanelCtrl extends MetricsPanelCtrl {
 
-  constructor($scope, $injector, $q, $rootScope, $timeout, $window, timeSrv, uiSegmentSrv, detangleSrv) {
+  constructor($scope, $injector, $q, $rootScope, $timeout, $window, timeSrv, uiSegmentSrv, detangleSrv, templateSrv) {
     super($scope, $injector);
     this.detangleSrv = detangleSrv;
+    this.templateSrv = templateSrv;
     this.$rootScope = $rootScope;
     this.timeSrv = timeSrv;
     this.uiSegmentSrv = uiSegmentSrv;
@@ -326,9 +327,9 @@ class PlotlyPanelCtrl extends MetricsPanelCtrl {
        * @author Ural
        */
       if (this.panel.pconfig.detangle.coupling) {
-        this.panel.pconfig.detangle.sourceTypeData = this.templateSrv.replaceWithText(this.panel.detangle.sourceType, this.panel.scopedVars);
-        this.panel.pconfig.detangle.targetTypeData = this.templateSrv.replaceWithText(this.panel.detangle.targetType, this.panel.scopedVars);
-        this.panel.pconfig.detangle.authorData = this.templateSrv.replaceWithText(this.panel.detangle.author, this.panel.scopedVars);
+        this.panel.pconfig.detangle.sourceTypeData = this.templateSrv.replaceWithText(this.panel.pconfig.detangle.sourceType, this.panel.scopedVars);
+        this.panel.pconfig.detangle.targetTypeData = this.templateSrv.replaceWithText(this.panel.pconfig.detangle.targetType, this.panel.scopedVars);
+        this.panel.pconfig.detangle.authorData = this.templateSrv.replaceWithText(this.panel.pconfig.detangle.author, this.panel.scopedVars);
         var t0 = performance.now();
 
         dataList = this.detangleSrv.dataConvertor(dataList, this.panel.pconfig.detangle, 'table');
