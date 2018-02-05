@@ -173,7 +173,8 @@ System.register(['app/plugins/sdk', 'lodash', 'moment', 'angular', './external/p
               targetTypeData: '',
               author: '$author',
               authorData: '',
-              target: 'issue'
+              target: 'issue',
+              minIssuesPerFile: null
             }
           };
 

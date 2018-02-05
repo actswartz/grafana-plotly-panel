@@ -112,6 +112,7 @@ class PlotlyPanelCtrl extends MetricsPanelCtrl {
         author: '$author',
         authorData: '',
         target: 'issue',
+        minIssuesPerFile: null,
       },
     };
 

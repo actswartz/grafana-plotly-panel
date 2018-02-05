@@ -11,7 +11,7 @@
   <div class="section gf-form-group">
     <h5 class="section-heading">Sort</h5>
     <div class="gf-form">
-      <label class="gf-form-label width-6">Order</label>
+      <label class="gf-form-label width-7">Order</label>
       <div class="gf-form-select-wrapper max-width-15">
         <select class="gf-form-input" ng-model="ctrl.panel.pconfig.detangle.sortingOrder" ng-options="item.value as item.text for item in ctrl.sortingOrder" ng-change="ctrl.refresh()"> </select>
       </div>
@@ -20,10 +20,14 @@
   <div class="section gf-form-group">
     <h5 class="section-heading">Data</h5>
     <div class="gf-form">
-      <label class="gf-form-label width-6">Target</label>
+      <label class="gf-form-label width-7">Target</label>
       <div class="gf-form-select-wrapper max-width-15">
         <select class="gf-form-input" ng-model="ctrl.panel.pconfig.detangle.target" ng-options="item.value as item.text for item in ctrl.targetSelections" ng-change="ctrl.refresh()"> </select>
       </div>
+    </div>
+    <div class="gf-form" ng-show="ctrl.panel.pconfig.detangle.target === 'file'">
+      <label class="gf-form-label width-7" >Min Issues</label>
+      <input type="number" class="gf-form-input max-width-8" ng-model="ctrl.panel.pconfig.detangle.minIssuesPerFile" placeholder="no limit" ng-change="ctrl.refresh()" ng-model-onblur bs-tooltip="'Minimum number of issues for file to be considered'" data-placement="right">
     </div>
   </div>
   <div class="section gf-form-group">
