@@ -20,14 +20,16 @@
   <div class="section gf-form-group">
     <h5 class="section-heading">Data</h5>
     <div class="gf-form">
-      <label class="gf-form-label width-7">Target</label>
+      <label class="gf-form-label width-10">Target</label>
       <div class="gf-form-select-wrapper max-width-15">
         <select class="gf-form-input" ng-model="ctrl.panel.pconfig.detangle.target" ng-options="item.value as item.text for item in ctrl.targetSelections" ng-change="ctrl.refresh()"> </select>
       </div>
     </div>
-    <div class="gf-form" ng-show="ctrl.panel.pconfig.detangle.target === 'file'">
-      <label class="gf-form-label width-7" >Min Issues</label>
-      <input type="number" class="gf-form-input max-width-8" ng-model="ctrl.panel.pconfig.detangle.minIssuesPerFile" placeholder="no limit" ng-change="ctrl.refresh()" ng-model-onblur bs-tooltip="'Minimum number of issues for file to be considered'" data-placement="right">
+    <div class="gf-form" >
+      <label class="gf-form-label width-10" >{{ctrl.panel.pconfig.detangle.target === 'file' ? 'Min Issues per File' : 'Min Files per Issue'}}</label>
+      <input type="number" class="gf-form-input max-width-8" ng-model="ctrl.panel.pconfig.detangle.minIssuesPerFile" placeholder="no limit" ng-change="ctrl.refresh()"
+             ng-model-onblur bs-tooltip="{{ctrl.panel.pconfig.detangle.target === 'file' ? 'Minimum number of issues for file to be considered' :
+              'Minimum number of files for issue to be considered'}}'" data-placement="right">
     </div>
   </div>
   <div class="section gf-form-group">
@@ -39,6 +41,10 @@
     <div class="gf-form">
       <label class="gf-form-label width-7">Target Type</label>
       <input type="text" class="gf-form-input max-width-8" ng-model="ctrl.panel.pconfig.detangle.targetType" ng-change="ctrl.refresh()" ng-model-onblur>
+    </div>
+    <div class="gf-form">
+      <label class="gf-form-label width-7">Issue Title</label>
+      <input type="text" class="gf-form-input max-width-8" ng-model="ctrl.panel.pconfig.detangle.issueTitle" ng-change="ctrl.refresh()" ng-model-onblur>
     </div>
     <div class="gf-form">
       <label class="gf-form-label width-7">Author</label>

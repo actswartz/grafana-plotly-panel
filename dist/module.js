@@ -174,7 +174,9 @@ System.register(['app/plugins/sdk', 'lodash', 'moment', 'angular', './external/p
               author: '$author',
               authorData: '',
               target: 'issue',
-              minIssuesPerFile: null
+              minIssuesPerFile: null,
+              issueTitle: '$issue_title',
+              issueTitleData: ''
             }
           };
 
@@ -404,6 +406,8 @@ System.register(['app/plugins/sdk', 'lodash', 'moment', 'angular', './external/p
                 this.panel.pconfig.detangle.sourceTypeData = this.templateSrv.replaceWithText(this.panel.pconfig.detangle.sourceType, this.panel.scopedVars);
                 this.panel.pconfig.detangle.targetTypeData = this.templateSrv.replaceWithText(this.panel.pconfig.detangle.targetType, this.panel.scopedVars);
                 this.panel.pconfig.detangle.authorData = this.templateSrv.replaceWithText(this.panel.pconfig.detangle.author, this.panel.scopedVars);
+                this.panel.pconfig.detangle.issueTitleData = this.templateSrv.replaceWithText(this.panel.pconfig.detangle.issueTitle, this.panel.scopedVars);
+
                 var t0 = performance.now();
 
                 dataList = this.detangleSrv.dataConvertor(dataList, this.panel.pconfig.detangle, 'table');
