@@ -25,29 +25,33 @@
         <select class="gf-form-input" ng-model="ctrl.panel.pconfig.detangle.target" ng-options="item.value as item.text for item in ctrl.targetSelections" ng-change="ctrl.refresh()"> </select>
       </div>
     </div>
-    <div class="gf-form" >
-      <label class="gf-form-label width-10" >{{ctrl.panel.pconfig.detangle.target === 'file' ? 'Min Issues per File' : 'Min Files per Issue'}}</label>
-      <input type="number" class="gf-form-input max-width-8" ng-model="ctrl.panel.pconfig.detangle.minIssuesPerFile" placeholder="no limit" ng-change="ctrl.refresh()"
-             ng-model-onblur bs-tooltip="{{ctrl.panel.pconfig.detangle.target === 'file' ? 'Minimum number of issues for file to be considered' :
-              'Minimum number of files for issue to be considered'}}'" data-placement="right">
-    </div>
   </div>
   <div class="section gf-form-group">
     <h5 class="section-heading">Filter</h5>
     <div class="gf-form">
-      <label class="gf-form-label width-7">Source Type</label>
+      <label class="gf-form-label width-10">Source Type</label>
       <input type="text" class="gf-form-input max-width-8" ng-model="ctrl.panel.pconfig.detangle.sourceType" ng-change="ctrl.refresh()" ng-model-onblur>
     </div>
     <div class="gf-form">
-      <label class="gf-form-label width-7">Target Type</label>
+      <label class="gf-form-label width-10">Target Type</label>
       <input type="text" class="gf-form-input max-width-8" ng-model="ctrl.panel.pconfig.detangle.targetType" ng-change="ctrl.refresh()" ng-model-onblur>
     </div>
     <div class="gf-form">
-      <label class="gf-form-label width-7">Issue Title</label>
+      <label class="gf-form-label width-10">Issue Title</label>
       <input type="text" class="gf-form-input max-width-8" ng-model="ctrl.panel.pconfig.detangle.issueTitle" ng-change="ctrl.refresh()" ng-model-onblur>
     </div>
     <div class="gf-form">
-      <label class="gf-form-label width-7">Author</label>
+      <label class="gf-form-label width-10">File Exclude Filter</label>
+      <input type="text" class="gf-form-input max-width-8" ng-model="ctrl.panel.pconfig.detangle.fileExcludeFilter" ng-change="ctrl.refresh()" ng-model-onblur>
+    </div>
+    <div class="gf-form" >
+      <label class="gf-form-label width-10" >{{ctrl.panel.pconfig.detangle.target === 'file' ? 'Min Issues per File' : 'Min Files per Issue'}}</label>
+      <input type="text" class="gf-form-input max-width-8" ng-model="ctrl.panel.pconfig.detangle.minIssuesPerFile" placeholder="no limit" ng-change="ctrl.refresh()"
+             ng-model-onblur bs-tooltip="{{ctrl.panel.pconfig.detangle.target === 'file' ? 'Minimum number of issues for file to be considered' :
+              'Minimum number of files for issue to be considered'}}'" data-placement="right">
+    </div>
+    <div class="gf-form">
+      <label class="gf-form-label width-10">Author</label>
       <input type="text" class="gf-form-input max-width-8" ng-model="ctrl.panel.pconfig.detangle.author" ng-change="ctrl.refresh()" ng-model-onblur>
     </div>
   </div>
