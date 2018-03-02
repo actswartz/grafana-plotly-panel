@@ -176,7 +176,11 @@ System.register(['app/plugins/sdk', 'lodash', 'moment', 'angular', './external/p
               target: 'issue',
               minIssuesPerFile: null,
               issueTitle: '$issue_title',
-              issueTitleData: ''
+              issueTitleData: '',
+              fileExcludeFilter: '$file_exclude',
+              fileExcludeFilterData: '',
+              metricRange: '$metric_range',
+              metricRangeData: ''
             }
           };
 
@@ -407,6 +411,7 @@ System.register(['app/plugins/sdk', 'lodash', 'moment', 'angular', './external/p
                 this.panel.pconfig.detangle.targetTypeData = this.templateSrv.replaceWithText(this.panel.pconfig.detangle.targetType, this.panel.scopedVars);
                 this.panel.pconfig.detangle.authorData = this.templateSrv.replaceWithText(this.panel.pconfig.detangle.author, this.panel.scopedVars);
                 this.panel.pconfig.detangle.issueTitleData = this.templateSrv.replaceWithText(this.panel.pconfig.detangle.issueTitle, this.panel.scopedVars);
+                this.panel.pconfig.detangle.metricRangeData = this.templateSrv.replaceWithText(this.panel.pconfig.detangle.metricRange, this.panel.scopedVars);
                 this.panel.pconfig.detangle.fileExcludeFilterData = this.templateSrv.replaceWithText(this.panel.pconfig.detangle.fileExcludeFilter, this.panel.scopedVars);
                 if (this.panel.pconfig.detangle.minIssuesPerFile) {
                   this.panel.pconfig.detangle.minEntriesData = this.templateSrv.replaceWithText(this.panel.pconfig.detangle.minIssuesPerFile, this.panel.scopedVars);
