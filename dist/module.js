@@ -180,7 +180,8 @@ System.register(['app/plugins/sdk', 'lodash', 'moment', 'angular', './external/p
               fileExcludeFilter: '$file_exclude',
               fileExcludeFilterData: '',
               metricRange: '$metric_range',
-              metricRangeData: ''
+              metricRangeData: '',
+              localSearch: ''
             }
           };
 

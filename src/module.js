@@ -119,6 +119,7 @@ class PlotlyPanelCtrl extends MetricsPanelCtrl {
         fileExcludeFilterData: '',
         metricRange: '$metric_range',
         metricRangeData: '',
+        localSearch: '',
       },
     };
 

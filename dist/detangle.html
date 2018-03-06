@@ -48,6 +48,10 @@
       <label class="gf-form-label width-10">Metric Range</label>
       <input type="text" class="gf-form-input max-width-8" ng-model="ctrl.panel.pconfig.detangle.metricRange" ng-change="ctrl.refresh()" ng-model-onblur>
     </div>
+    <div class="gf-form" ng-show="ctrl.panel.pconfig.detangle.target === 'file'">
+      <label class="gf-form-label width-10" >Local Module Filter</label>
+      <input type="text" class="gf-form-input max-width-8" ng-model="ctrl.panel.pconfig.detangle.localFilter" ng-change="ctrl.refresh()" ng-model-onblur>
+    </div>
     <div class="gf-form" >
       <label class="gf-form-label width-10" >{{ctrl.panel.pconfig.detangle.target === 'file' ? 'Min Issues per File' : 'Min Files per Issue'}}</label>
       <input type="text" class="gf-form-input max-width-8" ng-model="ctrl.panel.pconfig.detangle.minIssuesPerFile" placeholder="no limit" ng-change="ctrl.refresh()"
