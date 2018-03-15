@@ -1,10 +1,10 @@
 <div class="editor-row">
 	<div class="section gf-form-group">
     <h5 class="section-heading">Detangle</h5>
-    <gf-form-switch class="gf-form" label="Coupling" label-class="width-7" checked="ctrl.panel.pconfig.detangle.coupling" on-change="ctrl.refresh()">
+    <gf-form-switch class="gf-form" label="Coupling & Cohesion" label-class="width-12" checked="ctrl.panel.pconfig.detangle.coupling" on-change="ctrl.refresh()">
     </gf-form-switch>
     <div class="gf-form">
-      <label class="gf-form-label width-7">Limit</label>
+      <label class="gf-form-label width-12">Limit</label>
       <input type="number" class="gf-form-input max-width-8" ng-model="ctrl.panel.pconfig.detangle.limit" placeholder="unlimited" ng-change="ctrl.refresh()" ng-model-onblur bs-tooltip="'Number of Issues on the graph'" data-placement="right">
     </div>
 	</div>
