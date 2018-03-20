@@ -120,6 +120,7 @@ class PlotlyPanelCtrl extends MetricsPanelCtrl {
         metricRange: '$metric_range',
         metricRangeData: '',
         localSearch: '',
+        cohesionCalculationMethod: 'standard',
       },
     };
 
@@ -154,6 +155,15 @@ class PlotlyPanelCtrl extends MetricsPanelCtrl {
     this.targetSelections = [
       {text: 'Issues', value: 'issue'},
       {text: 'Files', value: 'file'},
+    ];
+
+    this.cohesionCalculationMethods = [
+      {
+        text: 'Standard', value: 'standard'
+      },
+      {
+        text: 'Double', value: 'double'
+      },
     ];
     /**
      * @detangleEdit end

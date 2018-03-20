@@ -181,7 +181,8 @@ System.register(['app/plugins/sdk', 'lodash', 'moment', 'angular', './external/p
               fileExcludeFilterData: '',
               metricRange: '$metric_range',
               metricRangeData: '',
-              localSearch: ''
+              localSearch: '',
+              cohesionCalculationMethod: 'standard'
             }
           };
 
@@ -208,6 +209,12 @@ System.register(['app/plugins/sdk', 'lodash', 'moment', 'angular', './external/p
           _this.couplingMetrics = [{ text: 'Coupling Value', value: 'coupling' }, { text: 'Num. of Couples', value: 'couplecounts' }];
 
           _this.targetSelections = [{ text: 'Issues', value: 'issue' }, { text: 'Files', value: 'file' }];
+
+          _this.cohesionCalculationMethods = [{
+            text: 'Standard', value: 'standard'
+          }, {
+            text: 'Double', value: 'double'
+          }];
           /**
            * @detangleEdit end
            * @author Ural
