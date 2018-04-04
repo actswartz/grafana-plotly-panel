@@ -121,6 +121,7 @@ class PlotlyPanelCtrl extends MetricsPanelCtrl {
         metricRangeData: '',
         localSearch: '',
         cohesionCalculationMethod: 'standard',
+        isAuthorDashboard: false,
       },
     };
 
@@ -153,7 +154,7 @@ class PlotlyPanelCtrl extends MetricsPanelCtrl {
     ];
 
     this.targetSelections = [
-      {text: 'Issues', value: 'issue'},
+      {text: 'Issues|Committers', value: 'issue'},
       {text: 'Files', value: 'file'},
     ];
 

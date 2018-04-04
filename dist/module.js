@@ -182,7 +182,8 @@ System.register(['app/plugins/sdk', 'lodash', 'moment', 'angular', './external/p
               metricRange: '$metric_range',
               metricRangeData: '',
               localSearch: '',
-              cohesionCalculationMethod: 'standard'
+              cohesionCalculationMethod: 'standard',
+              isAuthorDashboard: false
             }
           };
 
@@ -208,7 +209,7 @@ System.register(['app/plugins/sdk', 'lodash', 'moment', 'angular', './external/p
 
           _this.couplingMetrics = [{ text: 'Coupling Value', value: 'coupling' }, { text: 'Num. of Couples', value: 'couplecounts' }];
 
-          _this.targetSelections = [{ text: 'Issues', value: 'issue' }, { text: 'Files', value: 'file' }];
+          _this.targetSelections = [{ text: 'Issues|Committers', value: 'issue' }, { text: 'Files', value: 'file' }];
 
           _this.cohesionCalculationMethods = [{
             text: 'Standard', value: 'standard'
