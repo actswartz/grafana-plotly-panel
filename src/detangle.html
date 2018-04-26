@@ -62,8 +62,7 @@
       <input type="text" class="gf-form-input max-width-8" ng-model="ctrl.panel.pconfig.detangle.localFilter" ng-change="ctrl.refresh()" ng-model-onblur>
     </div>
     <div class="gf-form">
-      <label class="gf-form-label width-12">{{ctrl.panel.pconfig.detangle.target === 'file' || ctrl.panel.pconfig.detangle.metric ===
-        'cohesion' ?
+      <label class="gf-form-label width-12">{{ctrl.panel.pconfig.detangle.target === 'file'  ?
         (ctrl.panel.pconfig.detangle.isAuthorDashboard ? 'Min Committers per File' : 'Min Issues per File') :
         (ctrl.panel.pconfig.detangle.isAuthorDashboard ? 'Min Files per Committer' : 'Min Files per Issue')}}</label>
       <input type="text" class="gf-form-input max-width-8" ng-model="ctrl.panel.detangle.minIssuesPerFile"
