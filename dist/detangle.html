@@ -32,6 +32,25 @@
                 ng-options="item.value as item.text for item in ctrl.cohesionCalculationMethods" ng-change="ctrl.refresh()"> </select>
       </div>
     </div>
+    <div class="gf-form">
+      <label class="gf-form-label width-12">{{
+        (ctrl.panel.pconfig.detangle.isAuthorDashboard ? 'Min Committers per File' : 'Min Issues per File')}}</label>
+      <input type="text" class="gf-form-input max-width-8" ng-model="ctrl.panel.pconfig.detangle.minIssuesPerFile"
+             placeholder="no limit" ng-change="ctrl.refresh()"
+             ng-model-onblur data-placement="right">
+    </div>
+    <div class="gf-form">
+      <label class="gf-form-label width-12">{{
+        (ctrl.panel.pconfig.detangle.isAuthorDashboard ? 'Min Files per Committer' : 'Min Files per Issue')}}</label>
+      <input type="text" class="gf-form-input max-width-8" ng-model="ctrl.panel.pconfig.detangle.minFilesPerIssue"
+             placeholder="no limit" ng-change="ctrl.refresh()"
+             ng-model-onblur data-placement="right">
+    </div>
+    <div class="gf-form" >
+      <label class="gf-form-label width-12">File Grouping By</label>
+      <input type="text" class="gf-form-input max-width-8" ng-model="ctrl.panel.pconfig.detangle.fileGroup"
+             ng-change="ctrl.refresh()" ng-model-onblur>
+    </div>
   </div>
   <div class="section gf-form-group">
     <h5 class="section-heading">Filter</h5>
@@ -60,14 +79,6 @@
     <div class="gf-form" ng-show="ctrl.panel.pconfig.detangle.target === 'file'">
       <label class="gf-form-label width-12" >Local Module Filter</label>
       <input type="text" class="gf-form-input max-width-8" ng-model="ctrl.panel.pconfig.detangle.localFilter" ng-change="ctrl.refresh()" ng-model-onblur>
-    </div>
-    <div class="gf-form">
-      <label class="gf-form-label width-12">{{ctrl.panel.pconfig.detangle.target === 'file'  ?
-        (ctrl.panel.pconfig.detangle.isAuthorDashboard ? 'Min Committers per File' : 'Min Issues per File') :
-        (ctrl.panel.pconfig.detangle.isAuthorDashboard ? 'Min Files per Committer' : 'Min Files per Issue')}}</label>
-      <input type="text" class="gf-form-input max-width-8" ng-model="ctrl.panel.detangle.minIssuesPerFile"
-             placeholder="no limit" ng-change="ctrl.refresh()"
-             ng-model-onblur data-placement="right">
     </div>
     <div class="gf-form" ng-show="!ctrl.panel.pconfig.detangle.isAuthorDashboard">
       <label class="gf-form-label width-12">Author</label>

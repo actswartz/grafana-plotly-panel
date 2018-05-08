@@ -175,10 +175,15 @@ System.register(['app/plugins/sdk', 'lodash', 'moment', 'angular', './external/p
               authorData: '',
               target: 'issue',
               minIssuesPerFile: null,
+              minIssuesData: '',
+              minFilesPerIssue: null,
+              minFilesData: '',
               issueTitle: '$issue_title',
               issueTitleData: '',
               fileExcludeFilter: '$file_exclude',
               fileExcludeFilterData: '',
+              fileGroup: '$file_group',
+              fileGroupData: '',
               metricRange: '$metric_range',
               metricRangeData: '',
               localSearch: '',
@@ -421,9 +426,14 @@ System.register(['app/plugins/sdk', 'lodash', 'moment', 'angular', './external/p
                 this.panel.pconfig.detangle.authorData = this.templateSrv.replaceWithText(this.panel.pconfig.detangle.author, this.panel.scopedVars);
                 this.panel.pconfig.detangle.issueTitleData = this.templateSrv.replaceWithText(this.panel.pconfig.detangle.issueTitle, this.panel.scopedVars);
                 this.panel.pconfig.detangle.metricRangeData = this.templateSrv.replaceWithText(this.panel.pconfig.detangle.metricRange, this.panel.scopedVars);
+                this.panel.pconfig.detangle.fileGroupData = this.templateSrv.replaceWithText(this.panel.pconfig.detangle.fileGroup, this.panel.scopedVars);
+
                 this.panel.pconfig.detangle.fileExcludeFilterData = this.templateSrv.replaceWithText(this.panel.pconfig.detangle.fileExcludeFilter, this.panel.scopedVars);
                 if (this.panel.pconfig.detangle.minIssuesPerFile) {
-                  this.panel.pconfig.detangle.minEntriesData = this.templateSrv.replaceWithText(this.panel.pconfig.detangle.minIssuesPerFile, this.panel.scopedVars);
+                  this.panel.pconfig.detangle.minIssuesData = this.templateSrv.replaceWithText(this.panel.pconfig.detangle.minIssuesPerFile, this.panel.scopedVars);
+                }
+                if (this.panel.pconfig.detangle.minFilesPerIssue) {
+                  this.panel.pconfig.detangle.minFilesData = this.templateSrv.replaceWithText(this.panel.pconfig.detangle.minFilesPerIssue, this.panel.scopedVars);
                 }
                 var t0 = performance.now();
 
