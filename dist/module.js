@@ -429,6 +429,8 @@ System.register(['app/plugins/sdk', 'lodash', 'moment', 'angular', './external/p
                 this.panel.pconfig.detangle.fileGroupData = this.templateSrv.replaceWithText(this.panel.pconfig.detangle.fileGroup, this.panel.scopedVars);
 
                 this.panel.pconfig.detangle.fileExcludeFilterData = this.templateSrv.replaceWithText(this.panel.pconfig.detangle.fileExcludeFilter, this.panel.scopedVars);
+                this.panel.pconfig.detangle.fileHighlightData = this.templateSrv.replaceWithText('$file_highlight', this.panel.scopedVars);
+                this.panel.pconfig.detangle.fileIncludeFilterData = this.templateSrv.replaceWithText('$file_include', this.panel.scopedVars);
                 if (this.panel.pconfig.detangle.minIssuesPerFile) {
                   this.panel.pconfig.detangle.minIssuesData = this.templateSrv.replaceWithText(this.panel.pconfig.detangle.minIssuesPerFile, this.panel.scopedVars);
                 }
