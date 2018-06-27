@@ -421,25 +421,8 @@ System.register(['app/plugins/sdk', 'lodash', 'moment', 'angular', './external/p
                * @author Ural
                */
               if (this.panel.pconfig.detangle.coupling) {
-                this.panel.pconfig.detangle.sourceTypeData = this.templateSrv.replaceWithText(this.panel.pconfig.detangle.sourceType, this.panel.scopedVars);
-                this.panel.pconfig.detangle.targetTypeData = this.templateSrv.replaceWithText(this.panel.pconfig.detangle.targetType, this.panel.scopedVars);
-                this.panel.pconfig.detangle.authorData = this.templateSrv.replaceWithText(this.panel.pconfig.detangle.author, this.panel.scopedVars);
-                this.panel.pconfig.detangle.issueTitleData = this.templateSrv.replaceWithText(this.panel.pconfig.detangle.issueTitle, this.panel.scopedVars);
-                this.panel.pconfig.detangle.metricRangeData = this.templateSrv.replaceWithText(this.panel.pconfig.detangle.metricRange, this.panel.scopedVars);
-                this.panel.pconfig.detangle.fileGroupData = this.templateSrv.replaceWithText(this.panel.pconfig.detangle.fileGroup, this.panel.scopedVars);
-
-                this.panel.pconfig.detangle.fileExcludeFilterData = this.templateSrv.replaceWithText(this.panel.pconfig.detangle.fileExcludeFilter, this.panel.scopedVars);
-                this.panel.pconfig.detangle.fileHighlightData = this.templateSrv.replaceWithText('$file_highlight', this.panel.scopedVars);
-                this.panel.pconfig.detangle.fileIncludeFilterData = this.templateSrv.replaceWithText('$file_include', this.panel.scopedVars);
-                if (this.panel.pconfig.detangle.minIssuesPerFile) {
-                  this.panel.pconfig.detangle.minIssuesData = this.templateSrv.replaceWithText(this.panel.pconfig.detangle.minIssuesPerFile, this.panel.scopedVars);
-                }
-                if (this.panel.pconfig.detangle.minFilesPerIssue) {
-                  this.panel.pconfig.detangle.minFilesData = this.templateSrv.replaceWithText(this.panel.pconfig.detangle.minFilesPerIssue, this.panel.scopedVars);
-                }
                 var t0 = performance.now();
-
-                dataList = this.detangleSrv.dataConvertor(dataList, this.panel.pconfig.detangle, 'table');
+                dataList = this.detangleSrv.dataConvertor(dataList, this.templateSrv, this.panel.pconfig.detangle, 'table');
                 var t1 = performance.now();
                 console.log("Call to dataConvertor took " + (t1 - t0) + " milliseconds.");
               }
