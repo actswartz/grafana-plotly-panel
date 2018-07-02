@@ -436,7 +436,7 @@ class PlotlyPanelCtrl extends MetricsPanelCtrl {
           let rows = dataList[i].rows;
           if(rows.length > 0){
             let val = {
-              name: columns[1].text,
+              name: this.data[columns[1].text] ? columns[1].text + '-2' : columns[1].text,
               type: 'number',
               missing: 0,
               idx: i,
