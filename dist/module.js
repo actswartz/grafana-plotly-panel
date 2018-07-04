@@ -450,6 +450,15 @@ System.register(['app/plugins/sdk', 'lodash', 'moment', 'angular', './external/p
               };
               this.data[key.name] = key;
               this.data[idx.name] = idx;
+              var findKeyIndex = function findKeyIndex(array, key) {
+                for (var i = 0; i < array.length; i++) {
+                  if (array[i] == key) {
+                    return i;
+                  }
+                }
+                return -1;
+              };
+              var firstDataName = "";
               for (var i = 0; i < dataList.length; i++) {
                 var datapoints = dataList[i].datapoints;
                 if (datapoints !== undefined && datapoints.length > 0) {
@@ -504,7 +513,7 @@ System.register(['app/plugins/sdk', 'lodash', 'moment', 'angular', './external/p
                       type: 'number',
                       missing: 0,
                       idx: i,
-                      points: []
+                      points: i == 0 ? [] : new Array(idx.points.length).fill(0)
                     };
 
                     if (i == 0) {
@@ -514,23 +523,32 @@ System.register(['app/plugins/sdk', 'lodash', 'moment', 'angular', './external/p
                     } else if (i == 2) {
                       dmapping.z = _val.name;
                     }
-
                     this.data[_val.name] = _val;
                     if (key.points.length == 0) {
+                      firstDataName = _val.name;
                       for (var j = 0; j < rows.length; j++) {
                         key.points.push(rows[j][0]);
                         _val.points.push(rows[j][1]);
                         idx.points.push(j);
                       }
                     } else {
+                      var firstValArray = this.data[firstDataName];
                       for (var j = 0; j < rows.length; j++) {
-                        if (j >= key.points.length) {
-                          break;
-                        }
+                        //val.points.push(0);
+                        // if(j >= key.points.length ) {
+                        //   break;
+                        // }
                         // Make sure it is from the same timestamp
-                        if (key.points[j] == rows[j][0]) {
-                          _val.points.push(rows[j][1]);
+                        var tempIndex = findKeyIndex(key.points, rows[j][0]);
+                        if (tempIndex > -1) {
+                          _val.points[tempIndex] = rows[j][1];
+                          //val.points.push( rows[j][1] );
                         } else {
+                          key.points.push(rows[j][0]);
+                          firstValArray.points.push(0);
+                          var lastIndex = idx.points.length;
+                          _val.points[lastIndex] = rows[j][1];
+                          idx.points.push(lastIndex);
                           _val.missing = _val.missing + 1;
                         }
                       }
