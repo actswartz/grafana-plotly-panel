@@ -507,9 +507,10 @@ System.register(['app/plugins/sdk', 'lodash', 'moment', 'angular', './external/p
                 } else {
                   var columns = dataList[i].columns;
                   var rows = dataList[i].rows;
+                  var valueIndex = columns.length - 1;
                   if (rows.length > 0) {
                     var _val = {
-                      name: this.data[columns[1].text] ? columns[1].text + '-2' : columns[1].text,
+                      name: this.data[columns[valueIndex].text] ? columns[valueIndex].text + '-2' : columns[valueIndex].text,
                       type: 'number',
                       missing: 0,
                       idx: i,
@@ -527,8 +528,12 @@ System.register(['app/plugins/sdk', 'lodash', 'moment', 'angular', './external/p
                     if (key.points.length == 0) {
                       firstDataName = _val.name;
                       for (var j = 0; j < rows.length; j++) {
-                        key.points.push(rows[j][0]);
-                        _val.points.push(rows[j][1]);
+                        var tempKey = rows[j][0];
+                        for (var col = 1; col < valueIndex; col++) {
+                          tempKey += ' - ' + rows[j][col];
+                        }
+                        key.points.push(tempKey);
+                        _val.points.push(rows[j][valueIndex]);
                         idx.points.push(j);
                       }
                     } else {
@@ -539,15 +544,19 @@ System.register(['app/plugins/sdk', 'lodash', 'moment', 'angular', './external/p
                         //   break;
                         // }
                         // Make sure it is from the same timestamp
-                        var tempIndex = findKeyIndex(key.points, rows[j][0]);
+                        var _tempKey = rows[j][0];
+                        for (var _col = 1; _col < valueIndex; _col++) {
+                          _tempKey += ' - ' + rows[j][_col];
+                        }
+                        var tempIndex = findKeyIndex(key.points, _tempKey);
                         if (tempIndex > -1) {
-                          _val.points[tempIndex] = rows[j][1];
+                          _val.points[tempIndex] = rows[j][valueIndex];
                           //val.points.push( rows[j][1] );
                         } else {
-                          key.points.push(rows[j][0]);
+                          key.points.push(rows[j][_tempKey]);
                           firstValArray.points.push(0);
                           var lastIndex = idx.points.length;
-                          _val.points[lastIndex] = rows[j][1];
+                          _val.points[lastIndex] = rows[j][valueIndex];
                           idx.points.push(lastIndex);
                           _val.missing = _val.missing + 1;
                         }

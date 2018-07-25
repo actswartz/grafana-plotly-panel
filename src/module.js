@@ -443,9 +443,10 @@ class PlotlyPanelCtrl extends MetricsPanelCtrl {
         else{
           let columns = dataList[i].columns;
           let rows = dataList[i].rows;
+          let valueIndex = columns.length - 1;
           if(rows.length > 0){
             let val = {
-              name: this.data[columns[1].text] ? columns[1].text + '-2' : columns[1].text,
+              name: this.data[columns[valueIndex].text] ? columns[valueIndex].text + '-2' : columns[valueIndex].text,
               type: 'number',
               missing: 0,
               idx: i,
@@ -465,8 +466,12 @@ class PlotlyPanelCtrl extends MetricsPanelCtrl {
             if(key.points.length==0) {
               firstDataName = val.name;
               for(var j=0; j<rows.length; j++) {
-                key.points.push( rows[j][0] );
-                val.points.push( rows[j][1] );
+                let tempKey = rows[j][0];
+                for (let col = 1; col < valueIndex; col++) {
+                  tempKey += ' - ' + rows[j][col];
+                }
+                key.points.push( tempKey );
+                val.points.push( rows[j][valueIndex] );
                 idx.points.push( j );
               }
             }
@@ -478,19 +483,24 @@ class PlotlyPanelCtrl extends MetricsPanelCtrl {
                 //   break;
                 // }
                 // Make sure it is from the same timestamp
-                let tempIndex = findKeyIndex(key.points, rows[j][0]);
+                let tempKey = rows[j][0];
+                for (let col = 1; col < valueIndex; col++) {
+                  tempKey += ' - ' + rows[j][col];
+                }
+                let tempIndex = findKeyIndex(key.points, tempKey);
                 if(tempIndex > -1) {
-                  val.points[tempIndex] = rows[j][1];
+                  val.points[tempIndex] = rows[j][valueIndex];
                   //val.points.push( rows[j][1] );
                 }
                 else {
-                  key.points.push(rows[j][0]);
+                  key.points.push(rows[j][tempKey]);
                   firstValArray.points.push(0);
                   let lastIndex = idx.points.length;
-                  val.points[lastIndex] = rows[j][1];
+                  val.points[lastIndex] = rows[j][valueIndex];
                   idx.points.push( lastIndex );
                   val.missing = val.missing+1;
                 }
+
               }
             }
           }
